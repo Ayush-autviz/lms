@@ -1,6 +1,7 @@
 import moment from "moment";
 
 const getVideoId = (url: any) => {
+  console.log(url, "getyvedioId");
   var id = "";
   if (Boolean(url) && url.includes("v=")) {
     id = url.split("v=")[1];

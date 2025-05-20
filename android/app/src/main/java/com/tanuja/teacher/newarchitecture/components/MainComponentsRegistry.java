@@ -1,4 +1,4 @@
-package com.test.autviz.newarchitecture.components;
+package com.tanuja.teacher.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

@@ -25,5 +25,5 @@ http://app.teachersvision.in/#/account/watch?url=${youtube}
 };
 
 const style = StyleSheet.create({
-  webview: { width: 363, height: 200, opacity: 0.99 },
+  webview: { width: "100%", height: 500, opacity: 0.99 },
 });

@@ -9,8 +9,8 @@ import {
 } from "react-native";
 
 const wid = Dimensions.get("window").width;
-import {  FontAwesome } from "@expo/vector-icons";
-import { horizontalScale  } from "../utils/metrics";
+import { FontAwesome } from "@expo/vector-icons";
+import { horizontalScale } from "../utils/metrics";
 import { useNavigation } from "@react-navigation/native";
 import { generateBoxShadowStyle } from "../lib/generateBoxShadow";
 
@@ -23,16 +23,14 @@ const VideoCard = (props: any) => {
     videoUrl,
     title,
     videoId,
-    
+
     BuyCourse,
-    
+
     isFree,
     onCourseDetailPage,
   } = props;
 
-
-
- 
+  console.log(videoId, videoUrl, "videooooid");
 
   const navigateHandler = () => {
     isFree || isBuy
@@ -40,7 +38,6 @@ const VideoCard = (props: any) => {
       : BuyCourse();
   };
   return (
-
     <Fragment>
       {onCourseDetailPage && !isFree && !isBuy ? (
         <TouchableOpacity

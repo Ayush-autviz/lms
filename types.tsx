@@ -139,7 +139,7 @@ let section = {
   deletionTime: null,
   lastModificationTime: null,
   lastModifierUserId: null,
-  remainingTimeInSec :123,
+  remainingTimeInSec: 123,
   creationTime: "2023-04-05T05:47:04.2061497",
   creatorUserId: 2,
   id: 265,
@@ -212,6 +212,7 @@ export type RootStackParamList = {
   ViewExpanation: undefined;
   MockTestView: undefined;
   QuizTestViewExplanationScreen: undefined;
+  SubjectVideos: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

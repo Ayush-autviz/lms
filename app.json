@@ -31,9 +31,9 @@
       "splash": {
         "image": "./assets/images/splash.png",
         "resizeMode": "cover",
-        "backgroundColor": "#68B39E"
+        "backgroundColor": "#323562"
       },
-      "package": "com.test.autviz",
+      "package": "com.tanuja.teacher",
       "versionCode": 2
     },
     "web": {

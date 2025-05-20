@@ -1,4 +1,4 @@
-package com.test.autviz;
+package com.tanuja.teacher;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -17,7 +17,7 @@ public class MainActivity extends ReactActivity {
     // coloring the background, status bar, and navigation bar.
     // This is required for expo-splash-screen.
     // super.onCreate(savedInstanceState);
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+  //  getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
     setTheme(R.style.AppTheme);
     super.onCreate(null);
   }

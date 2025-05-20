@@ -37,6 +37,7 @@ function CourseDetails(props: any) {
   const [courseData, setCourseData] = useState<any>([]);
   const [buttonValue, setButtonValue] = useState<boolean>(false);
   const [courseType, setCourseType] = useState();
+  const [dropdownData, setDropdowndata] = useState([]);
 
   const [subjectName, setSubjectName] = useState<any[]>([]);
   const [mockTestData, setMockTestData] = useState<any>([]);
@@ -49,7 +50,13 @@ function CourseDetails(props: any) {
   const [topicDropData, setTopicDropData] = useState([]);
   const { data, Courseid } = props.route.params;
 
+  console.log(Courseid,'courseid')
+
   const navigation = useNavigation();
+
+  console.log(filterVideo, "filtervideo");
+
+  console.log(buttonValue,'button')
 
   const filterVideosforCurrSelection = (
     value: string | number,
@@ -65,12 +72,22 @@ function CourseDetails(props: any) {
       return;
     }
 
-    if (filterFor === "subject")
-      setFilteredVideos(videos.filter((item: any) => value == item?.subjectId));
-    else {
-      setFilteredVideos(
-        videos.filter((item: any) => value == item?.topicsName)
-      );
+    if (filterFor === "subject") {
+      //   setFilteredVideos(videos.filter((item: any) => value == item?.subjectId));
+      const filteredVideos = dropdownData
+        .filter((subject) => subject.name === value)
+        .flatMap((subject) => subject.topics)
+        .flatMap((topic) => topic.videoGalleryUrls);
+
+      setFilteredVideos(filteredVideos);
+    } else {
+      //  setFilteredVideos(videos.filter((item: any) => value == item?.title));
+      const filteredVideos = dropdownData
+        .flatMap((subject) => subject.topics)
+        .filter((topic) => topic.name === value)
+        .flatMap((topic) => topic.videoGalleryUrls);
+
+      setFilteredVideos(filteredVideos);
     }
   };
 
@@ -130,6 +147,8 @@ function CourseDetails(props: any) {
       });
   };
 
+  console.log(subjectName, "subjectname");
+
   const createEnrollementCoures = async (mockTestIndex?: number) => {
     let payload = JSON.stringify({
       studentId: userDetail.id,
@@ -142,6 +161,8 @@ function CourseDetails(props: any) {
       headers,
       data: payload,
     };
+
+   
 
     await axios(config)
       .then(function (response: any) {
@@ -170,11 +191,48 @@ function CourseDetails(props: any) {
 
     await axios(config)
       .then(function (response: any) {
+        console.log(response?.data?.result, "resultttt");
+        const transformedData = (response?.data?.result?.videos || []).reduce(
+          (acc, item) => {
+            // Ensure item and item.videoGalleryUrls are defined
+            if (!item || !Array.isArray(item.videoGalleryUrls)) {
+              return acc; // Skip the current iteration if videoGalleryUrls is not an array
+            }
+        
+            const subjectKey = item.subjectName || "Unknown Subject"; // Handle null subject case
+            const topicKey = item.topicsName || "Unknown Topic"; // Handle null topic case
+        
+            // Find or create subject
+            let subject = acc.find((sub) => sub.name === subjectKey);
+            if (!subject) {
+              subject = { name: subjectKey, topics: [] };
+              acc.push(subject);
+            }
+        
+            // Find or create topic
+            let topic = subject.topics.find((t) => t.name === topicKey);
+            if (!topic) {
+              topic = { name: topicKey, videoGalleryUrls: [] };
+              subject.topics.push(topic);
+            }
+        
+            // Add video gallery URLs (ensure videoGalleryUrls is an array)
+            topic.videoGalleryUrls.push(...item.videoGalleryUrls);
+        
+            return acc;
+          },
+          []
+        );
+        
+        
+        console.log(transformedData, "transformed data");
+        console.log(response?.data?.result?.isBuy,'isbuy')
+        setDropdowndata(transformedData);
         setVideoForTopicFilter(
-          response?.data?.result?.videos.map((item: any) => item.topicsName)
+          response?.data?.result?.videos?.map((item: any) => item.topicsName)
         );
         setButtonValue(
-          response.data.result.isBuy || response.data.result.price === 0
+          response?.data?.result?.isBuy || response.data.result.price === 0
         );
         const seen: any = new Set([]);
         const seenTopic: any = new Set([]);
@@ -198,8 +256,16 @@ function CourseDetails(props: any) {
         ]);
         setCourseData(response.data.result);
 
-        setFilteredVideos(response?.data?.result?.videos);
-        setVideos(response?.data?.result?.videos);
+        setFilteredVideos(
+          transformedData
+            .flatMap((subject) => subject.topics)
+            .flatMap((topic) => topic.videoGalleryUrls)
+        );
+        setVideos(
+          transformedData
+            .flatMap((subject) => subject.topics)
+            .flatMap((topic) => topic.videoGalleryUrls)
+        );
         setCourseType(response.data.result.type);
 
         if (
@@ -218,9 +284,12 @@ function CourseDetails(props: any) {
         );
       })
       .catch(function (error: any) {
-        console.log(error);
+        console.log(error,'erorrrr');
       });
   };
+
+  console.log("CData", courseData);
+
   const createPayment = async (status: Status, razorpay_payment_id: string) => {
     var payload = {
       couragementId: Courseid,
@@ -244,7 +313,7 @@ function CourseDetails(props: any) {
     };
 
     await axios(config)
-      .then(function (response: any) { })
+      .then(function (response: any) {})
       .catch(function (error: any) {
         console.log("create payment APi", error);
       });
@@ -317,7 +386,7 @@ function CourseDetails(props: any) {
     };
 
     await axios(config)
-      .then(function (response: any) { })
+      .then(function (response: any) {})
       .catch(function (error: any) {
         console.log("Create MockTest Failed", error);
       });
@@ -330,21 +399,30 @@ function CourseDetails(props: any) {
       getEnrollMockTestByUserIdAndCouresId();
     }, [])
   );
-  const getTopicBySubjectId = async (id: any) => {
-    const headers: any = {
-      Authorization: `Bearer ${access_token}`,
-    };
+  const getTopicBySubjectId = async (subjectName: any) => {
+    // const headers: any = {
+    //   Authorization: `Bearer ${access_token}`,
+    // };
 
-    try {
-      const res = await axios.get(
-        `${baseUrl}/api/services/app/Topics/GetTopicsBySubject?subjectId=${id}`,
-        headers
-      );
+    // try {
+    //   const res = await axios.get(
+    //     `${baseUrl}/api/services/app/Topics/GetTopicsBySubject?subjectId=${subjectName}`,
+    //     headers
+    //   );
+    //   console.log(res.data.result);
+    //   setTopicDropData(res.data.result);
+    // } catch (error) {
+    //   console.log(error, "something went wrong");
+    // }
 
-      setTopicDropData(res.data.result);
-    } catch (error) {
-      console.log(error, "something went wrong");
-    }
+    // Assuming transformedData is your array of subjects
+    const topics = dropdownData
+      .filter((subject) => subject.name === subjectName) // Find the matching subject
+      .flatMap((subject) => subject.topics) // Extract topics
+      .map((topic) => ({ title: topic.name })); // Format each topic
+
+    // Update state with the retrieved topics
+    setTopicDropData(topics);
   };
 
   return (
@@ -461,8 +539,8 @@ function CourseDetails(props: any) {
                   onPress={() =>
                     buttonValue
                       ? props.navigation.navigate("Web", {
-                        id: `${e.id}`,
-                      })
+                          id: `${e.id}`,
+                        })
                       : BuyCourse()
                   }
                   style={styles.topicCntr}
@@ -541,8 +619,11 @@ function CourseDetails(props: any) {
                   data={subjectName}
                   onSelect={(selectedItem, index) => {
                     setSelectedSubjectId(selectedItem.id);
-                    getTopicBySubjectId(selectedItem.id);
-                    filterVideosforCurrSelection(selectedItem.id, "subject");
+                    getTopicBySubjectId(selectedItem.subjectName);
+                    filterVideosforCurrSelection(
+                      selectedItem.subjectName,
+                      "subject"
+                    );
                   }}
                   rowTextForSelection={(item, index) => {
                     return item.subjectName;
@@ -580,6 +661,7 @@ function CourseDetails(props: any) {
                   disabled={topicDropData.length === 0}
                   onSelect={(selectedItem, index) => {
                     const { title } = selectedItem;
+                    console.log("titleeeee", title);
                     filterVideosforCurrSelection(title, "topic");
                   }}
                   rowTextForSelection={(item, index) => {
@@ -596,13 +678,13 @@ function CourseDetails(props: any) {
               return (
                 <VideoCard
                   key={video.id}
-                  startTime={video.startTime}
-                  videoUrl={video.videoUrl}
+                  //  startTime={video.startTime}
+                  videoUrl={video.url}
                   title={video.title}
                   isBuy={video.isFree || buttonValue ? true : false}
                   BuyCourse={BuyCourse}
                   onCourseDetailPage={true}
-                  videoId={getVideoId(video.videoUrl)}
+                  videoId={getVideoId(video.url)}
                   navigation={props.navigation}
                   isFree={video.isFree}
                 />
@@ -675,16 +757,22 @@ function CourseDetails(props: any) {
             <Text allowFontScaling={false} style={styles.textstyle}>
               Price
             </Text>
-            <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center"}} >
-            <FontAwesome
-                  style={{ marginRight: 5, marginLeft: 5 }}
-                  name="rupee"
-                  size={20}
-                  color="#A9A9A9"
-                />
-            <Text allowFontScaling={false} style={styles.textstyle}>
-              {data.price}
-            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <FontAwesome
+                style={{ marginRight: 5, marginLeft: 5 }}
+                name="rupee"
+                size={20}
+                color="#A9A9A9"
+              />
+              <Text allowFontScaling={false} style={styles.textstyle}>
+                {data.price}
+              </Text>
             </View>
           </View>
           <View style={styles.courseDetail}>
@@ -700,25 +788,30 @@ function CourseDetails(props: any) {
               Valid Year
             </Text>
             <Text allowFontScaling={false} style={styles.textstyle}>
-              {calcValidity(moment().add(1, 'year').format('YYYY-MM-DD'))}
+              {calcValidity(moment().add(1, "year").format("YYYY-MM-DD"))}
             </Text>
           </View>
           <View style={styles.courseDetail}>
             <Text allowFontScaling={false} style={styles.textstyle}>
               Total
             </Text>
-            <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center"}} >
-            <FontAwesome
-                  style={{ marginRight: 5, marginLeft: 5 }}
-                  name="rupee"
-                  size={20}
-                  color="#A9A9A9"
-                />
-            <Text allowFontScaling={false} style={styles.textstyle}>
-              {data.price}
-            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <FontAwesome
+                style={{ marginRight: 5, marginLeft: 5 }}
+                name="rupee"
+                size={20}
+                color="#A9A9A9"
+              />
+              <Text allowFontScaling={false} style={styles.textstyle}>
+                {data.price}
+              </Text>
             </View>
-
           </View>
           <View style={{}}>
             <TouchableOpacity

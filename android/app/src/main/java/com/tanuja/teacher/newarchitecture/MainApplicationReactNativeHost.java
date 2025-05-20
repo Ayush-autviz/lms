@@ -1,4 +1,4 @@
-package com.test.autviz.newarchitecture;
+package com.tanuja.teacher.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -20,9 +20,9 @@ import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.test.autviz.BuildConfig;
-import com.test.autviz.newarchitecture.components.MainComponentsRegistry;
-import com.test.autviz.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.tanuja.teacher.BuildConfig;
+import com.tanuja.teacher.newarchitecture.components.MainComponentsRegistry;
+import com.tanuja.teacher.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

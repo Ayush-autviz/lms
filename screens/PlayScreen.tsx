@@ -73,6 +73,7 @@ export default function PlayScreen(props: any) {
       const { data, status } = await getData(
         "/api/services/app/SubjectService/GetAll"
       );
+      console.log("fetchsubData", data);
 
       setAllSubjects(data.items);
       setIsLoading(false);
@@ -82,6 +83,9 @@ export default function PlayScreen(props: any) {
   useEffect(() => {
     fetchAllSubject();
   }, []);
+
+  console.log("allsub", allSubject);
+
   return (
     <View style={{ backgroundColor: "#F7F7F7", flex: 1 }}>
       <HeaderNav navigation={props.navigation} name="Videos" />
@@ -164,10 +168,11 @@ export default function PlayScreen(props: any) {
                   style={{ width: wid }}
                   renderItem={({ item }) => (
                     <>
+                      {console.log("itemid", item.id)}
                       <TouchableOpacity
                         style={styles.topicCntr}
                         onPress={() =>
-                          props.navigation.navigate("Videos", {
+                          props.navigation.navigate("SubjectVideos", {
                             id: item.id,
                           })
                         }
@@ -228,7 +233,7 @@ export default function PlayScreen(props: any) {
                       <TouchableOpacity
                         style={styles.topicCntr}
                         onPress={() =>
-                          props.navigation.navigate("Videos", {
+                          props.navigation.navigate("SubjectVideos", {
                             id: item.id,
                           })
                         }

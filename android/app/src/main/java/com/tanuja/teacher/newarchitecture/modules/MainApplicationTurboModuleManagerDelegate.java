@@ -1,4 +1,4 @@
-package com.test.autviz.newarchitecture.modules;
+package com.tanuja.teacher.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

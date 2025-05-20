@@ -1,11 +1,8 @@
 import {
-  
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  
-  
   BackHandler,
   Platform,
   ScrollView,
@@ -28,6 +25,7 @@ const high = Dimensions.get("window").height;
 export default function VideosScreen(props: any) {
   const [res, setRes] = useState("All");
   const { videoUrl: url } = props.route.params;
+  console.log(url, "urlllll");
   const [color, setColor] = useState(true);
   const [playing, setPlaying] = useState(true);
   const [color1, setColor1] = useState(false);
@@ -66,6 +64,8 @@ export default function VideosScreen(props: any) {
         config
       );
 
+      console.log(res.data.result, "freevideodata");
+
       SetFreeVideoData(res.data.result);
     } catch (error) {
       console.log(error);
@@ -98,6 +98,10 @@ export default function VideosScreen(props: any) {
     setPlaying((prev) => !prev);
   }, []);
 
+  const navigateBack = () => {
+    props.navigation.goBack();
+  };
+
   return (
     <View
       style={{
@@ -106,16 +110,17 @@ export default function VideosScreen(props: any) {
       }}
     >
       <HeaderNav name="Videos List" navigation={props.navigation} />
-      
-      <MyWebComponentVid youtube={getVideoId(videoUrl)} />
+      {url ? (
+        <MyWebComponentVid youtube={getVideoId(url)} />
+      ) : (
+        <Text>No videos</Text>
+      )}
       <View
         style={{
           justifyContent: "center",
           backgroundColor: "#FAFAFB",
         }}
       >
-     
-
         <TouchableOpacity
           style={{
             height: high / 14.233,
@@ -132,7 +137,7 @@ export default function VideosScreen(props: any) {
           }}
         />
       </View>
-      <View
+      {/* <View
         style={{
           width: "100%",
           backgroundColor: "#FAFAFB",
@@ -221,9 +226,9 @@ export default function VideosScreen(props: any) {
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
 
-      <ScrollView
+      {/* <ScrollView
         style={{
           backgroundColor: "#FAFAFB",
           marginBottom: 50,
@@ -264,7 +269,7 @@ export default function VideosScreen(props: any) {
             );
           }
         })}
-      </ScrollView>
+      </ScrollView> */}
     </View>
   );
 }

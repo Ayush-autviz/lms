@@ -9,7 +9,13 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { ColorSchemeName, Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  ColorSchemeName,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import useColorScheme from "../hooks/useColorScheme";
 import TabTwoScreen from "../screens/TabTwoScreen";
@@ -42,6 +48,7 @@ import QuizTestScreen from "../screens/QuizTestScreen";
 import ViewExplantionScreen from "../screens/ViewExplantionScreen";
 import ViewMockTest from "../screens/ViewMockTest";
 import QuizTestViewExplantion from "../screens/QuizTestViewExplantion";
+import SubjectVideoScreen from "../screens/SubjectVideoScreen";
 
 function Navigation({ colorScheme }: NonNullable<ColorSchemeName> | any) {
   return (
@@ -237,6 +244,12 @@ function Home() {
       />
 
       <Stack.Screen
+        name="SubjectVideos"
+        component={SubjectVideoScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
         name="TestResult"
         component={TestResultScreen}
         options={{ headerShown: false }}
@@ -299,7 +312,7 @@ function BottomTabNavigator({ navigation }: any) {
           },
           tabBarStyle: {
             bottom: 0,
-            zIndex:999,
+            zIndex: 999,
             alignItems: "center",
             justifyContent: "space-around",
             backgroundColor: "#FAFAFB",
@@ -313,15 +326,20 @@ function BottomTabNavigator({ navigation }: any) {
           component={Home}
           listeners={({ navigation }) => ({
             tabPress: (event: { preventDefault: () => void }) => {
-             // event.preventDefault();
-              console.log('runnnnnnnnnnn')
+              // event.preventDefault();
+              console.log("runnnnnnnnnnn");
               navigation.navigate("Home");
             },
           })}
           options={() => ({
             tabBarLabel: "Home",
             tabBarIcon: ({ focused }) => (
-              <TouchableOpacity onPress={()=>{ navigation.navigate("HomeScreen")}} style={styles.container}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("HomeScreen");
+                }}
+                style={styles.container}
+              >
                 <AntDesign
                   name="home"
                   size={24}
@@ -343,7 +361,12 @@ function BottomTabNavigator({ navigation }: any) {
           options={{
             tabBarLabel: "My Course",
             tabBarIcon: ({ focused }) => (
-              <TouchableOpacity onPress={()=>{ navigation.navigate("TabTwoScreen")}} style={styles.container}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("TabTwoScreen");
+                }}
+                style={styles.container}
+              >
                 <Ionicons
                   name="book-outline"
                   size={24}
@@ -358,7 +381,7 @@ function BottomTabNavigator({ navigation }: any) {
           component={PlayScreen}
           listeners={({ navigation }) => ({
             tabPress: (event: { preventDefault: () => void }) => {
-              console.log('runnnnnnnnnnn');
+              console.log("runnnnnnnnnnn");
               event.preventDefault();
               navigation.navigate("PlayScreen");
             },
@@ -366,7 +389,12 @@ function BottomTabNavigator({ navigation }: any) {
           options={{
             tabBarLabel: "Videos",
             tabBarIcon: ({ focused }) => (
-              <TouchableOpacity onPress={()=>{ navigation.navigate("PlayScreen")}} style={styles.container}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("PlayScreen");
+                }}
+                style={styles.container}
+              >
                 <Image
                   style={{
                     justifyContent: "center",
@@ -387,7 +415,12 @@ function BottomTabNavigator({ navigation }: any) {
             title: "MockTest",
             tabBarLabel: "MockTest",
             tabBarIcon: ({ focused }) => (
-              <TouchableOpacity onPress={()=>{ navigation.navigate("MockTestScreen")}} style={styles.container}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("MockTestScreen");
+                }}
+                style={styles.container}
+              >
                 <MaterialIcons
                   name="library-books"
                   size={24}
@@ -404,7 +437,12 @@ function BottomTabNavigator({ navigation }: any) {
             title: "Feed",
             tabBarLabel: "Feed",
             tabBarIcon: ({ focused }) => (
-              <TouchableOpacity onPress={()=>{ navigation.navigate("FeedScreen")}} style={styles.container}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("FeedScreen");
+                }}
+                style={styles.container}
+              >
                 <MaterialCommunityIcons
                   name="newspaper-variant-outline"
                   size={24}
